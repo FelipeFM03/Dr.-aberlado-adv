@@ -366,42 +366,43 @@
     </div>
     <div class="contact-form">
       <p style="font-size:18px; font-weight:600; color:white; margin-bottom:24px; font-family:'Playfair Display',serif;">Envie sua mensagem</p>
-      <div class="form-grid">
-        <div class="form-row">
-          <label>Nome completo</label>
-          <input type="text" placeholder="Seu nome">
+      <form id="contactForm" method="POST" action="send-email.php">
+        <div class="form-grid">
+          <div class="form-row">
+            <label for="fullName">Nome completo</label>
+            <input type="text" id="fullName" name="fullName" placeholder="Seu nome" required>
+          </div>
+          <div class="form-row">
+            <label for="phone">Telefone / WhatsApp</label>
+            <input type="tel" id="phone" name="phone" placeholder="(91) 9 0000-0000" required>
+          </div>
         </div>
         <div class="form-row">
-          <label>Telefone / WhatsApp</label>
-          <input type="tel" placeholder="(91) 9 0000-0000">
+          <label for="email">E-mail</label>
+          <input type="email" id="email" name="email" placeholder="seuemail@exemplo.com" required>
         </div>
-      </div>
-      <div class="form-row">
-        <label>E-mail</label>
-        <input type="email" placeholder="seuemail@exemplo.com">
-      </div>
-      <div class="form-row">
-        <label>Tipo de caso</label>
-        <select>
-          <option value="">Selecione o assunto...</option>
-          <option>Verbas rescisórias não pagas</option>
-          <option>Horas extras e intervalos</option>
-          <option>Reversão de justa causa</option>
-          <option>Reconhecimento de vínculo</option>
-          <option>Danos morais / assédio</option>
-          <option>Acidente de trabalho</option>
-          <option>Insalubridade / periculosidade</option>
-          <option>Rescisão indireta</option>
-          <option>Outro assunto</option>
-        </select>
-      </div>
-      <div class="form-row">
-        <label>Descreva brevemente seu caso</label>
-        <textarea placeholder="Conte o que está acontecendo com você. Quanto mais detalhe, melhor poderemos te orientar."></textarea>
-      </div>
-      <a href="https://wa.me/5591987345606?text=Olá,%20gostaria%20de%20falar%20sobre%20meu%20caso%20trabalhista" target="_blank">
-        <button class="btn-form">Enviar pelo WhatsApp →</button>
-      </a>
+        <div class="form-row">
+          <label for="caseType">Tipo de caso</label>
+          <select id="caseType" name="caseType" required>
+            <option value="">Selecione o assunto...</option>
+            <option value="Verbas rescisórias não pagas">Verbas rescisórias não pagas</option>
+            <option value="Horas extras e intervalos">Horas extras e intervalos</option>
+            <option value="Reversão de justa causa">Reversão de justa causa</option>
+            <option value="Reconhecimento de vínculo">Reconhecimento de vínculo</option>
+            <option value="Danos morais / assédio">Danos morais / assédio</option>
+            <option value="Acidente de trabalho">Acidente de trabalho</option>
+            <option value="Insalubridade / periculosidade">Insalubridade / periculosidade</option>
+            <option value="Rescisão indireta">Rescisão indireta</option>
+            <option value="Outro assunto">Outro assunto</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="message">Descreva brevemente seu caso</label>
+          <textarea id="message" name="message" placeholder="Conte o que está acontecendo com você. Quanto mais detalhe, melhor poderemos te orientar." required></textarea>
+        </div>
+        <button type="submit" class="btn-form" id="submitBtn">Enviar mensagem →</button>
+        <div id="formMessage" style="margin-top: 12px; padding: 12px; border-radius: 2px; display: none; text-align: center; font-size: 14px;"></div>
+      </form>
     </div>
   </div>
 </section>

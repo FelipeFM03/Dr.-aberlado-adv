@@ -97,7 +97,7 @@ try {
     
     if (MAIL_METHOD === 'smtp' && function_exists('fsockopen')) {
         // ── MÉTODO SMTP (mais confiável) ──
-        $mailSent = sendViaSMTP($email, $fullName, $subject, $emailBody);
+        $mailSent = sendViaSMTP($email, $fullName, $subject, $emailBody, $headers);
     } else {
         // ── MÉTODO PHP MAIL (fallback) ──
         $mailSent = @mail(COMPANY_EMAIL, $subject, $emailBody, $headers);
@@ -149,7 +149,7 @@ Ananindeua - PA
 }
 
 // ── FUNÇÃO PARA ENVIAR VIA SMTP ──
-function sendViaSMTP($replyTo, $replyToName, $subject, $body) {
+function sendViaSMTP($replyTo, $replyToName, $subject, $body, $headers) {
     try {
         $host = SMTP_HOST;
         $port = SMTP_PORT;
@@ -157,18 +157,79 @@ function sendViaSMTP($replyTo, $replyToName, $subject, $body) {
         $pass = SMTP_PASS;
         $from = SMTP_FROM;
         $to = COMPANY_EMAIL;
-        
+
         $connection = fsockopen($host, $port, $errno, $errstr, 10);
-        
         if (!$connection) {
+            error_log("SMTP Connection failed: {$errno} - {$errstr}");
             return false;
         }
-        
-        // Simular conexão SMTP básica (não recomendado para produção)
-        // Para produção, use PHPMailer ou Swift Mailer
-        return false;
-        
+
+        // Autenticação SMTP simples via socket
+        $server = fgets($connection, 515);
+        fputs($connection, "EHLO localhost\r\n");
+        $server = fgets($connection, 515);
+        while (substr($server, 3, 1) != ' ') {
+            $server = fgets($connection, 515);
+        }
+
+        fputs($connection, "STARTTLS\r\n");
+        $server = fgets($connection, 515);
+        if (substr($server, 0, 3) !== '220') {
+            error_log("SMTP STARTTLS failed: {$server}");
+            fclose($connection);
+            return false;
+        }
+
+        stream_socket_enable_crypto($connection, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
+
+        fputs($connection, "EHLO localhost\r\n");
+        $server = fgets($connection, 515);
+        while (substr($server, 3, 1) != ' ') {
+            $server = fgets($connection, 515);
+        }
+
+        fputs($connection, "AUTH LOGIN\r\n");
+        $server = fgets($connection, 515);
+        if (substr($server, 0, 3) !== '334') {
+            error_log("SMTP AUTH failed: {$server}");
+            fclose($connection);
+            return false;
+        }
+
+        fputs($connection, base64_encode($user) . "\r\n");
+        $server = fgets($connection, 515);
+        fputs($connection, base64_encode($pass) . "\r\n");
+        $server = fgets($connection, 515);
+        if (substr($server, 0, 3) !== '235') {
+            error_log("SMTP login failed: {$server}");
+            fclose($connection);
+            return false;
+        }
+
+        fputs($connection, "MAIL FROM: <{$from}>\r\n");
+        $server = fgets($connection, 515);
+        fputs($connection, "RCPT TO: <{$to}>\r\n");
+        $server = fgets($connection, 515);
+        fputs($connection, "DATA\r\n");
+        $server = fgets($connection, 515);
+
+        $headersString = "From: " . COMPANY_NAME . " <{$from}>\r\n" .
+                         "Reply-To: {$replyTo}\r\n" .
+                         "MIME-Version: 1.0\r\n" .
+                         "Content-Type: text/plain; charset=UTF-8\r\n" .
+                         "X-Mailer: Abelardo Cardoso Website\r\n";
+
+        $message = "Subject: {$subject}\r\n" . $headersString . "\r\n" . $body . "\r\n.\r\n";
+        fputs($connection, $message);
+        $server = fgets($connection, 515);
+
+        fputs($connection, "QUIT\r\n");
+        fclose($connection);
+
+        return substr($server, 0, 3) === '250';
+
     } catch (Exception $e) {
+        error_log("SMTP Exception: " . $e->getMessage());
         return false;
     }
 }

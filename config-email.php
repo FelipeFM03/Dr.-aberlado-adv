@@ -8,19 +8,19 @@
 // ════════════════════════════════════════════════════════════
 
 // ── Email da empresa (onde receberá as mensagens) ──
-define('COMPANY_EMAIL', 'abelardocardoso.trabalhista@gmail.com');
+define('COMPANY_EMAIL', 'felipemonteiro121103@gmail.com');
 define('COMPANY_NAME', 'Abelardo Cardoso - Advocacia Trabalhista');
 
 // ── Método de envio ──
 // Opções: 'php' (usa mail() do servidor) ou 'smtp' (recomendado)
-define('MAIL_METHOD', 'php');
+define('MAIL_METHOD', 'smtp');
 
 // ── CONFIGURAÇÃO SMTP (caso use MAIL_METHOD = 'smtp') ──
 define('SMTP_HOST', 'smtp.gmail.com');
 define('SMTP_PORT', 587);
-define('SMTP_USER', 'seu_email@gmail.com');      // ← CONFIGURE SEU EMAIL
-define('SMTP_PASS', 'sua_senha_app');             // ← CONFIGURE SUA SENHA
-define('SMTP_FROM', 'seu_email@gmail.com');       // ← CONFIGURE SEU EMAIL
+define('SMTP_USER', 'felipemonteiro121103@gmail.com');      // ← CONFIGURE SEU EMAIL
+define('SMTP_PASS', 'wytk uyof kkem umcl');             // ← CONFIGURE SUA SENHA
+define('SMTP_FROM', 'felipemonteiro121103@gmail.com');       // ← CONFIGURE SEU EMAIL
 
 // ── VALIDAÇÃO ──
 define('MIN_NAME_LENGTH', 3);
